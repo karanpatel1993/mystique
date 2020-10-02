@@ -4,6 +4,7 @@ class Grid:
         self.N = N
         self.grid = [['0' for m in range(M)] for n in range(N)]
         self.forbidden_cells = None
+        self.score = 0
 
     def set_forbidden_cells(self, cell):
         y,x = [int(i) for i in cell]

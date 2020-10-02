@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from tetris.engine.grid import generate_grid
 
 
@@ -5,14 +6,16 @@ def search_location(g, label, current_piece, penalty_pieces):
     # Try to place the piece in the grid
     for row in range(g.N):
         for col in range(g.M):
-            current_piece.start_point = [row, col]
-            print('Start point:', current_piece.start_point)
-            current_piece.set_cells()
-            for orientation in current_piece.cells_occupied.keys():
-                if healthcheck(current_piece, orientation, g, penalty_pieces):
-                    g.place_the_piece(label, current_piece.cells_occupied[orientation])
-                    return
-    return
+            # Check if the cell is empty
+            if g.grid[row][col] == '0':
+                current_piece.start_point = [row, col]
+                # print('Start point:', current_piece.start_point)
+                current_piece.set_cells()
+                for orientation in current_piece.cells_occupied.keys():
+                    if healthcheck(current_piece, orientation, g, penalty_pieces):
+                        g.place_the_piece(label, current_piece.cells_occupied[orientation])
+                        return 1
+    return 0
 
 
 def healthcheck(current_piece, orientation, g, penalty_pieces):
@@ -24,14 +27,14 @@ def healthcheck(current_piece, orientation, g, penalty_pieces):
     for cell in current_piece.cells_occupied[orientation]:
         current_x, current_y = cell
         if current_x < min_x or current_x > max_x or current_y < min_y or current_y > max_y:
-            print("The piece is placed outside the grid")
+            # print("The piece is placed outside the grid")
             return False
 
     # Check if the piece is not placed on a forbidden cell or overlapping on an already placed piece
     for cell in current_piece.cells_occupied[orientation]:
         current_x, current_y = cell
         if g.grid[current_x][current_y] != '0':
-            print("The piece is placed either on a forbidden area or overlapping with another piece")
+            # print("The piece is placed either on a forbidden area or overlapping with another piece")
             return False
 
     # Check if the piece to not adjacent to a penalty piece
@@ -67,15 +70,14 @@ def healthcheck(current_piece, orientation, g, penalty_pieces):
 
 def generate_simulation():
     g, tetrominoes, penalty_pieces = generate_grid()
-    print(g.grid)
-    print(tetrominoes)
 
     # Sample piece placement
-    for label in tetrominoes:
-        # search_location(g, tetrominoes[label].shape, tetrominoes[label], penalty_pieces)
-        # g.display()
-        search_location(g, label, tetrominoes[label], penalty_pieces)
-        g.display()
+    score = 0
+    for label in tqdm(tetrominoes, total=len(tetrominoes), desc='Placing pieces in the grid'):
+        g.score += search_location(g, label, tetrominoes[label], penalty_pieces)
+
+    # g.display()
+    print("Score:", g.score)
 
 
 
