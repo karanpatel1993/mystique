@@ -1,6 +1,10 @@
 from tqdm import tqdm
+import pandas as pd
 from tetris.engine.grid import generate_grid
 
+"""
+Place the pieces in the order of the input
+"""
 
 def search_location(g, label, current_piece, penalty_pieces):
     # Try to place the piece in the grid
@@ -68,8 +72,8 @@ def healthcheck(current_piece, orientation, g, penalty_pieces):
     return True
 
 
-def generate_simulation():
-    g, tetrominoes, penalty_pieces = generate_grid()
+def generate_simulation(input_file, output_file):
+    g, tetrominoes, penalty_pieces, pieces_config = generate_grid(input_file)
 
     # Sample piece placement
     score = 0
@@ -78,6 +82,7 @@ def generate_simulation():
 
     # g.display()
     print("Score:", g.score)
+    pd.DataFrame(g.output).to_csv(output_file, sep=' ', index=False, header=False)
 
 
 

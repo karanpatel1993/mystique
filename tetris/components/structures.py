@@ -5,6 +5,7 @@ class Grid:
         self.grid = [['0' for m in range(M)] for n in range(N)]
         self.forbidden_cells = None
         self.score = 0
+        self.output = list()
 
     def set_forbidden_cells(self, cell):
         y,x = [int(i) for i in cell]
@@ -14,13 +15,20 @@ class Grid:
         for point in cells:
             place_x, place_y = point
             self.grid[place_x][place_y] = label
+        self.generate_submission(label, cells)
 
     def display(self):
         for row in self.grid:
                 print(row)
 
-    def generate_score(self):
-        pass
+    def generate_submission(self, label, cells):
+        indi_piece = dict()
+        indi_piece['label'] = label
+        for index, point in enumerate(cells):
+            x, y = point
+            indi_piece[index] = str(x) + ',' + str(y)
+        self.output.append(indi_piece)
+
 
 
 class Piece:
