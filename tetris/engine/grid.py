@@ -1,13 +1,14 @@
 from collections import defaultdict
 from tetris.components.structures import Grid, Piece
 
-def generate_grid():
+def generate_grid(input_file):
     # Create placeholders
     tetrominoes = dict()
+    pieces_config = defaultdict(list)
     penalty_pieces = defaultdict(list)
 
     # Read input file
-    with open('Problems/Problem5.txt','r') as f:
+    with open(input_file,'r') as f:
         input_params = f.read().split('\n')
         M,N = [int(i) for i in input_params[1].split(' ')]
         pieces = input_params[input_params.index('PIECES') + 1 : input_params.index('FORBIDDEN')]
@@ -29,6 +30,10 @@ def generate_grid():
         for t_piece in pieces:
             label, shape = t_piece.split(' ')
             tetrominoes[label] = Piece(label=label, shape=shape)
+            # Club similar pieces together
+            pieces_config[shape].append(label)
+
+
 
         # Generate penalty pairs
         for pairs in penalty:
@@ -37,7 +42,7 @@ def generate_grid():
             penalty_pieces[d].append(s)
 
     # print(penalty_pieces)
-    return g, tetrominoes, penalty_pieces
+    return g, tetrominoes, penalty_pieces, pieces_config
 
 
 if __name__ == '__main__':
