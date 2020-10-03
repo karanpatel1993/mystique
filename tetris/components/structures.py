@@ -6,15 +6,17 @@ class Grid:
         self.forbidden_cells = None
         self.score = 0
         self.output = list()
+        self.grid_height = 0
 
     def set_forbidden_cells(self, cell):
         y,x = [int(i) for i in cell]
         self.grid[x][y] = '-1'    # set -1 for cells which are forbidden
 
-    def place_the_piece(self, label, cells):
+    def place_the_piece(self, label, cells, new_height):
         for point in cells:
             place_x, place_y = point
             self.grid[place_x][place_y] = label
+        self.grid_height = new_height
         self.generate_submission(label, cells)
 
     def display(self):
