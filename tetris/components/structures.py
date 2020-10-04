@@ -28,7 +28,7 @@ class Grid:
         indi_piece['label'] = label
         for index, point in enumerate(cells):
             x, y = point
-            indi_piece[index] = str(x) + ',' + str(y)
+            indi_piece[index] = str(y) + ',' + str(x)
         self.output.append(indi_piece)
 
 
