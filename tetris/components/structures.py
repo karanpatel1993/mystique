@@ -53,7 +53,7 @@ class Piece:
         elif self.shape == 'T':
             self.cells_occupied = {'1': [(x, y), (x, y+1), (x, y+2), (x+1, y+1)],
                                    '2': [(x, y), (x+1, y), (x+2, y), (x+1, y-1)],
-                                   '3': [(x, y), (x, y+1), (x, y+2), (x-1, y+1)],
+                                   '3': [(x, y), (x, y-1), (x, y-2), (x-1, y-1)],
                                    '4': [(x, y), (x-1, y), (x-2, y), (x-1, y+1)]
                                    }
         elif self.shape == 'J':
