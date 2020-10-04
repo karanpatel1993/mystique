@@ -4,19 +4,17 @@ from tetris.engine.grid import generate_grid
 
 """
 Add pieces which result in minimum height
+{"1": 20, "2": 507, "3": 1782, "4": 7429, "5": 9299}
 """
 
 
 def search_location(g, label, current_piece, penalty_pieces):
     height_increase = float("inf")
     cells_occupied = None
-    # print('Label:', label)
-    # print('Shape', current_piece.shape)
-    ## Set a limit to the number of row to be evaluated
-    max_rows = min(g.N, g.grid_height+2)
-    # print('Max_rows to be evaluated:', max_rows)
+    cells_checked = 0 # Set a limit to the number of cells to be evaluated
+
     # Try to place the piece in the grid
-    for row in range(max_rows):
+    for row in range(g.N):
         for col in range(g.M):
             # Check if the cell is empty
             if g.grid[row][col] == '0':
@@ -24,16 +22,18 @@ def search_location(g, label, current_piece, penalty_pieces):
                 current_piece.set_cells()
                 for orientation in current_piece.cells_occupied.keys():
                     if healthcheck(current_piece, orientation, g, penalty_pieces):
+                        cells_checked += 1
                         piece_height = max([cell[0] for cell in current_piece.cells_occupied[orientation]])
                         if piece_height < height_increase:
                             height_increase = piece_height
                             cells_occupied = current_piece.cells_occupied[orientation]
                             # print("Orientation", orientation)
                             # print("Height increase", height_increase)
+                if cells_checked >= g.M:
+                    break
 
     if cells_occupied:
         g.place_the_piece(label, cells_occupied, height_increase)
-        # print("Grid height:",g.grid_height)
         return 1
 
     return 0
