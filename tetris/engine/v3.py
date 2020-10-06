@@ -1,6 +1,7 @@
 from tqdm import tqdm
 import pandas as pd
 from tetris.engine.grid import generate_grid
+import random
 
 """
 Add pieces which result in minimum height
@@ -92,12 +93,16 @@ def healthcheck(current_piece, orientation, g, penalty_pieces):
 def generate_simulation(input_file, output_file):
     g, tetrominoes, penalty_pieces, pieces_config = generate_grid(input_file)
 
-    # Sample piece placement
+    # Shuffle the incoming pieces
+    l = list(tetrominoes.items())
+    random.shuffle(l)
+    tetrominoes = dict(l)
+
     score = 0
     for label in tqdm(tetrominoes, total=len(tetrominoes), desc='Placing pieces in the grid'):
         g.score += search_location(g, label, tetrominoes[label], penalty_pieces)
 
-    # g.display()
+    g.display()
     print("Score:", g.score)
     pd.DataFrame(g.output).to_csv(output_file, sep=' ', index=False, header=False)
 

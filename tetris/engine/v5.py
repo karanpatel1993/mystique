@@ -1,11 +1,12 @@
 from tqdm import tqdm
 import pandas as pd
 import math
+import random
 from tetris.engine.grid import generate_grid
 
 """
 Add pieces which result in minimum height and target corner fits first
-{"1": , "2": , "3": , "4": , "5": }
+{"1": 19, "2": 509, "3": 1779, "4": 7429, "5": 9313}
 """
 
 
@@ -121,12 +122,17 @@ def healthcheck(current_piece, orientation, g, penalty_pieces):
 def generate_simulation(input_file, output_file):
     g, tetrominoes, penalty_pieces, pieces_config = generate_grid(input_file)
 
+    # Shuffle the incoming pieces
+    l = list(tetrominoes.items())
+    random.shuffle(l)
+    tetrominoes = dict(l)
+
     # Sample piece placement
     score = 0
     for label in tqdm(tetrominoes, total=len(tetrominoes), desc='Placing pieces in the grid'):
         g.score += search_location(g, label, tetrominoes[label], penalty_pieces)
 
-    # g.display()
+    g.display()
     print("Score:", g.score)
     pd.DataFrame(g.output).to_csv(output_file, sep=' ', index=False, header=False)
 
